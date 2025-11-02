@@ -39,7 +39,7 @@ class FirebaseAdminManager {
     try {
       // Prefer environment variable, fall back to file
       const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-        ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+        ? JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf-8'))
         : readServiceAccountFile();
 
       if (!serviceAccount) {
