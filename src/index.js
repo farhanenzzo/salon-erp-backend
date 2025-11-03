@@ -25,7 +25,10 @@ const port = parseInt(process.env.PORT || PORT, GENERAL_CONSTANTS.TEN);
 const host = process.env.HOST || HOST;
 
 const corsOptions = {
-  origin: process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) =>
+  // FIX APPLIED HERE: Use the nullish coalescing operator (?? '')
+  // If CORS_ALLOWED_ORIGINS is null or undefined, it defaults to an empty string,
+  // preventing the "Cannot read properties of undefined (reading 'split')" error.
+  origin: (process.env.CORS_ALLOWED_ORIGINS ?? "").split(",").map((origin) =>
     origin.trim()
   ),
   credentials: true, // Allow credentials (cookies, authorization headers)
