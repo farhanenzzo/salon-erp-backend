@@ -468,7 +468,7 @@ export const PAYMENT_STATUSES = {
 
 export const TOKEN_EXPIRY = 60 * 60 * 1000;
 export const COMPANY_TOKEN_HEADER = "x-company-token";
-export const STRIPE_SIGNATURE_HEADER = "stripe-signature";
+// export const STRIPE_SIGNATURE_HEADER = "stripe-signature";
 export const AUTHORIZATION_SCHEME = "Bearer";
 export const BOOLEAN_VALUE = "boolean";
 

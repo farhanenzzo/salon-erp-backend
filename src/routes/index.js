@@ -13,7 +13,7 @@ import { authMiddleware, isAuthenticated } from "../middleware/auth.js";
 import { decodeCompanyToken } from "../middleware/decodeCompanyToken.js";
 import categoryRoutes from "./category.js";
 import notificationRoutes from "./notification.js";
-import stripeRoutes from "./stripe.js";
+// import stripeRoutes from "./stripe.js";
 import moduleRoutes from "./module.js";
 import roleRoutes from "./role.js";
 import paymentRoutes from "../routes/payment.js";
@@ -91,12 +91,14 @@ router.use(
   decodeCompanyToken,
   notificationRoutes
 );
+/*
 router.use(
   BASE_ROUTES.PAYMENT,
   isAuthenticated,
   decodeCompanyToken,
   stripeRoutes
 );
+*/
 
 router.use(
   BASE_ROUTES.PAYMENT,
