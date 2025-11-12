@@ -53,7 +53,9 @@ const servicesSchema = new mongoose.Schema(
       ref: MODELS.COMPANY, // Reference to the Company model
       required: true, // Ensure this is always set
     },
-    serviceID: { type: String, unique: true },
+    serviceID: {
+      type: String,
+    },
     serviceName: { type: String, required: true },
     serviceImage: { type: String, required: true },
     category: {
@@ -73,6 +75,8 @@ const servicesSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+servicesSchema.index({ companyId: 1, serviceID: 1 }, { unique: true });
 
 /**
  * Mongoose model for the Services schema.

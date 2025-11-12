@@ -8,6 +8,22 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 const containerName = AZURE_IMAGE_CONTAINER;
 const containerClient = blobServiceClient.getContainerClient(containerName);
 
+// Ensure the container exists
+async function createContainerIfNotExists() {
+  const createContainerResponse = await containerClient.createIfNotExists();
+  if (createContainerResponse.succeeded) {
+    console.log(`Container '${containerName}' created or already exists.`);
+  } else if (createContainerResponse.errorCode === 'ContainerAlreadyExists') {
+    console.log(`Container '${containerName}' already exists.`);
+  } else {
+    console.error(`Failed to create container '${containerName}':`, createContainerResponse.errorCode);
+    throw new Error(`Failed to create container '${containerName}'`);
+  }
+}
+
+// Call this function once when the module is loaded
+createContainerIfNotExists();
+
 /**
  * Uploads an image to Azure Blob Storage
  *

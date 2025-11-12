@@ -22,6 +22,9 @@ export async function seedModules() {
     // Connect to the database
     await connectDB();
 
+    // Clear existing modules
+    await Module.deleteMany({});
+
     // Check if modules exist and seed if not
     const existingModules = await Module.countDocuments();
     if (existingModules > 0) {

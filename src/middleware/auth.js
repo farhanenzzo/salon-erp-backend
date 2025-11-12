@@ -33,7 +33,17 @@ export const isAuthenticated = async (req, res, next) => {
 
       // Directly assign the customerIdToken if available
       if (customerIdToken) {
-        req.customerId = customerIdToken; // Directly assign the customerId to the request object
+        try {
+          const decodedCustomerToken = jwt.verify(
+            customerIdToken,
+            process.env.JWT_SECRET
+          );
+          req.customerId = decodedCustomerToken.customerId;
+        } catch (error) {
+          return res
+            .status(403)
+            .json({ message: "Invalid customer token." });
+        }
       }
 
       req.userId = decodedToken.uid; // Firebase token will have `uid`
@@ -50,7 +60,17 @@ export const isAuthenticated = async (req, res, next) => {
       req.userId = decodedToken.uid; // Your normal JWT will have `userId`
 
       if (customerIdToken) {
-        req.customerId = customerIdToken; // Directly assign the customerId to the request object
+        try {
+          const decodedCustomerToken = jwt.verify(
+            customerIdToken,
+            process.env.JWT_SECRET
+          );
+          req.customerId = decodedCustomerToken.customerId;
+        } catch (error) {
+          return res
+            .status(403)
+            .json({ message: "Invalid customer token." });
+        }
       }
 
       return next(); // Proceed to the next middleware if JWT is valid

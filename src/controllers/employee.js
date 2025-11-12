@@ -51,6 +51,17 @@ export const addEmployee = async (req, res) => {
   }
 
   try {
+    // Check if an employee with the same email already exists for this company
+    const existingEmployee = await Employee.findOne({
+      employeeEmail,
+      companyId,
+    });
+
+    if (existingEmployee) {
+      return res
+        .status(409)
+        .json({ message: ERROR_MESSAGES.EMPLOYEE_EXISTS });
+    }
     // Generate employee ID
 
     // Create a new employee object

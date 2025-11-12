@@ -8,9 +8,15 @@ export const sidebarModules = [
     route: "/appointments",
   },
   { id: 3, icon: "employees", moduleName: "Employees", route: "/employees" },
-  { id: 4, icon: "clients", moduleName: "Clients", route: "/clients" },
+  { id: 4, icon: "customers", moduleName: "Customers", route: "/customers" },
   { id: 5, icon: "offers", moduleName: "Offers", route: "/offers" },
   { id: 6, icon: "services", moduleName: "Services", route: "/services" },
+  {
+    id: 11,
+    icon: "categories",
+    moduleName: "Categories",
+    route: "/categories",
+  },
   {
     id: 7,
     icon: "transactions",

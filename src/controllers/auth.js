@@ -223,19 +223,18 @@ export const signupUser = async (req, res) => {
       });
     }
 
+    const userId = await generateNextUserId(companyId);
+
     // Create new user with the assigned role
     const newUser = new User({
       name,
       firebaseUid,
       email,
+      userId,
       role: assignedRole._id,
       company: companyObjectId,
     });
 
-    await newUser.save();
-
-    const userId = await generateNextUserId(companyId);
-    newUser.userId = userId;
     await newUser.save();
 
     const company = await Company.findById(companyObjectId);

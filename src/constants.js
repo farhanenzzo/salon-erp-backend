@@ -376,7 +376,8 @@ export const ERROR_MESSAGES = {
     "Both start and end dates must be provided.",
   SUPER_ADMIN_ALREADY_EXISTS: "A SuperAdmin already exists for this company.",
   EMAIL_ALREADY_IN_USE: "Email already in use.",
-  INVALID_DURATION:"Invalid duration" 
+  INVALID_DURATION:"Invalid duration" ,
+  EMPLOYEE_EXISTS: "An employee with this email already exists."
 };
 
 export const SUCCESS_MESSAGES = {

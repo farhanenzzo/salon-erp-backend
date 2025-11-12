@@ -57,7 +57,7 @@ const EmployeeIdTracker = mongoose.model(
  */
 const employeeSchema = new mongoose.Schema(
   {
-    employeeId: { type: String, unique: true },
+    employeeId: { type: String },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: MODELS.COMPANY, // Reference to the Company model
@@ -90,6 +90,9 @@ const employeeSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Add a compound index to ensure employeeId is unique per company
+employeeSchema.index({ companyId: 1, employeeId: 1 }, { unique: true });
 
 /**
  * Mongoose model for the Employee schema.

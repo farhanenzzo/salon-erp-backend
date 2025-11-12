@@ -18,9 +18,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   userId: {
-    type: String,
-    unique: true,
-  },
+      type: String,
+    },
   email: {
     type: String,
     required: true,
@@ -60,6 +59,8 @@ const userSchema = new mongoose.Schema({
   },
   isTrashed: { type: Boolean, default: false }, // Soft delete mechanism
 });
+
+userSchema.index({ company: 1, userId: 1 }, { unique: true });
 
 const User = mongoose.model(MODELS.USER, userSchema);
 
