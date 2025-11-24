@@ -165,7 +165,7 @@ export const UPLOAD_IMAGE_FIELD = {
   STOCK_IMAGE: "stockImage",
 };
 
-export const COMPANY_NAME = "Luxelooks";
+export const COMPANY_NAME = "Grotech";
 
 export const EMAIL_TEXT = {
   VERIFY_EMAIL: "Verify Your Email Address",
@@ -376,7 +376,7 @@ export const ERROR_MESSAGES = {
     "Both start and end dates must be provided.",
   SUPER_ADMIN_ALREADY_EXISTS: "A SuperAdmin already exists for this company.",
   EMAIL_ALREADY_IN_USE: "Email already in use.",
-  INVALID_DURATION:"Invalid duration" ,
+  INVALID_DURATION: "Invalid duration",
   EMPLOYEE_EXISTS: "An employee with this email already exists."
 };
 
@@ -657,8 +657,7 @@ export const DATE_AND_TIME_FORMAT = "YYYY-MM-DD HH:mm";
 export const MOMENT_DATE_FORMAT = "YYYY-MM-DD";
 export const DATE_FORMAT = "yyyy-MM-dd";
 export const TIME_FORMAT = "HH:mm";
-export const DEFAULT_PROFILE_IMAGE_URL =
-  "https://i.ibb.co/LPxR7gw/blank-profile-picture-973460-1280.png";
+export const DEFAULT_PROFILE_IMAGE_URL = "https://i.ibb.co/LPxR7gw/blank-profile-picture-973460-1280.png";
 
 export const STOCK_STATUS_CRON_UPDATION = {
   DAILY: "0 0 * * *",

@@ -40,7 +40,7 @@ const StockIdTracker = mongoose.model(
  * @property {boolean} [isTrashed=false] - Indicates whether the stock is soft-deleted.
  */
 const stockSchema = new mongoose.Schema({
-  stockId: { type: String, unique: true },
+  stockId: { type: String, required: true },
   stockName: { type: String, required: true },
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -71,6 +71,8 @@ const stockSchema = new mongoose.Schema({
   stockDescription: { type: String },
   isTrashed: { type: Boolean, default: false },
 });
+
+stockSchema.index({ companyId: 1, stockId: 1 }, { unique: true });
 
 /**
  * @typedef {mongoose.Model} Stocks - Mongoose model for managing stock information.

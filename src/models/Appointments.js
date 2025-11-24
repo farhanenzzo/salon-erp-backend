@@ -47,7 +47,7 @@ const AppointmentIdTracker = mongoose.model(
  */
 const appointmentSchema = new mongoose.Schema(
   {
-    appointmentId: { type: String, required: true, unique: true },
+    appointmentId: { type: String, required: true },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: MODELS.COMPANY, // Reference to the Company model
@@ -100,6 +100,8 @@ const appointmentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+appointmentSchema.index({ appointmentId: 1, companyId: 1 }, { unique: true });
 
 /**
  * Mongoose model for the Appointment schema.

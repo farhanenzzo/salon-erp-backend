@@ -36,7 +36,7 @@ Luxelooks Support Team
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; border: 1px solid #ccc; border-radius: 8px; padding: 20px; background-color: #f4f4f4;">
           <tr>
             <td style="text-align: center; padding-bottom: 20px;">
-              <h2 style="font-size: 24px; color: #5a5a5a;">Welcome to Luxelooks, ${name}!</h2>
+              <h2 style="font-size: 24px; color: #5a5a5a;">Welcome to Grotech, ${name}!</h2>
             </td>
           </tr>
           <tr>

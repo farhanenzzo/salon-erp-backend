@@ -114,7 +114,10 @@ export const addNewStock = async (req, res) => {
       return STOCK_STATUSES.IN_STOCK;
     })();
 
+    const generateStockId = await generateNextStockId(companyId);
+
     const newStock = new Stocks({
+      stockId: generateStockId,
       stockName,
       stockCategory, // Store categoryId here
       stockQuantity,
@@ -128,11 +131,6 @@ export const addNewStock = async (req, res) => {
       price,
     });
 
-    await newStock.save();
-
-    const generateStockId = await generateNextStockId(companyId);
-
-    newStock.stockId = generateStockId;
     await newStock.save();
 
     res.status(201).json({
