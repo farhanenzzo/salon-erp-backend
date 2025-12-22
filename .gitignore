@@ -29,6 +29,8 @@ yarn-error.log*
 # Secrets 
 /src/secrets/*
 serviceAccount.json
+service-account.json
+
 
 #firebse credentials
 firebseAdmin.js
