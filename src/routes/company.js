@@ -4,9 +4,11 @@ import {
   companyDetailsController,
   listAllCompanies,
   updateCompanyData,
+  getCompanyByIdController,
 } from "../controllers/company.js";
 import { isAuthenticated } from "../middleware/auth.js";
 import { decodeCompanyToken } from "../middleware/decodeCompanyToken.js";
+import { checkGrotechAdmin } from "../middleware/checkGrotechAdmin.js";
 import { COMPANY_ROUTES } from "../constants.js";
 
 const router = express.Router();
@@ -47,6 +49,13 @@ router.patch(
  * @route GET /api/company/list
  * @access Public
  */
-router.get(COMPANY_ROUTES.LIST_ALL_COMPANIES, listAllCompanies);
+router.get(COMPANY_ROUTES.LIST_ALL_COMPANIES, checkGrotechAdmin, listAllCompanies);
+
+/**
+ * Public route to get company details by ID
+ * @route GET /api/company/:companyId
+ * @access Public
+ */
+router.get(COMPANY_ROUTES.GET_COMPANY_BY_ID, getCompanyByIdController);
 
 export default router;

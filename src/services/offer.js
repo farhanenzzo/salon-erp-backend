@@ -12,7 +12,7 @@ import {
   TIME_FORMAT,
   TIME_ZONE,
 } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import moment from "moment-timezone";
 
 /**
@@ -58,7 +58,7 @@ export const createOffer = async (offerData, companyId, file) => {
   if (file) {
     try {
       const fileName = `${Date.now()}-${file.originalname}`;
-      photoToUse = await uploadImageToBlob(file.buffer, fileName);
+      photoToUse = await uploadImageToFirebase(file.buffer, fileName);
     } catch (error) {
       throw new Error("Image upload failed.");
     }

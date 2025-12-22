@@ -26,7 +26,7 @@ import {
 } from "../constants.js";
 import { generateVerificationEmail } from "../utils/emailTemplates.js";
 import Company from "../models/Company.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import {
   generateNextClientId,
   generateNextUserId,
@@ -742,8 +742,8 @@ export const updateProfile = async (req, res) => {
       // Generate a unique file name using the current timestamp
       const fileName = `${Date.now()}-${req.file.originalname}`;
 
-      // Upload the image to Azure Blob and get the image URL
-      profileIMG = await uploadImageToBlob(req.file.buffer, fileName);
+      // Upload the image to Firebase and get the image URL
+      profileIMG = await uploadImageToFirebase(req.file.buffer, fileName);
     } catch (error) {
       return res
         .status(500)

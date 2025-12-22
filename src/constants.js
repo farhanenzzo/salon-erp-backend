@@ -66,6 +66,7 @@ export const COMPANY_ROUTES = {
   GET_COMPANY_DETAILS: "/",
   UPDATE_COMPANY: "/",
   LIST_ALL_COMPANIES: "/list",
+  GET_COMPANY_BY_ID: "/:companyId",
 };
 
 export const EMPLOYEE_ROUTES = {
@@ -576,6 +577,7 @@ export const COMPANY_FIELDS = {
   NAME: "name",
   COUNTRY: "country",
   CITY: "city",
+  ADDRESS: "address",
 };
 
 export const NOTIFICATION_MESSAGES = {

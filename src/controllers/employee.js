@@ -8,7 +8,7 @@ import {
   GENERAL_CONSTANTS,
   SUCCESS_MESSAGES,
 } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import { generateNextEmployeeId } from "../utils/idGenerator.js";
 
 /**
@@ -41,7 +41,7 @@ export const addEmployee = async (req, res) => {
   if (req.file) {
     try {
       const fileName = `${Date.now()}-${req.file.originalname}`;
-      employeePhoto = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+      employeePhoto = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
     } catch (error) {
       console.log(ERROR_MESSAGES.FAILED_IMAGE_UPLOAD, error);
       return res
@@ -384,7 +384,7 @@ export const updateEmployee = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        const uploadedPhoto = await uploadImageToBlob(
+        const uploadedPhoto = await uploadImageToFirebase(
           req.file.buffer,
           fileName
         ); // Upload and get URL

@@ -6,7 +6,7 @@ import {
   fetchOffers,
   updateOffer,
 } from "../services/offer.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 
 /**
  * Adds a new offer, optionally including an uploaded image.
@@ -108,7 +108,7 @@ export const updateOfferById = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        photoToUse = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+        photoToUse = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
       } catch (error) {
         return res
           .status(500)

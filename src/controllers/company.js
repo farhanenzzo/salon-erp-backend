@@ -9,6 +9,7 @@ import {
   companyDetails,
   listCompanies,
   updateCompanyDetails,
+  getCompanyById,
 } from "../services/company.js";
 
 /**
@@ -51,6 +52,28 @@ export const companyDetailsController = async (req, res) => {
     res.status(200).json(company);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+/**
+ * Retrieves the details of a company by its ID from the URL parameters.
+ * @async
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Promise<void>}
+ */
+export const getCompanyByIdController = async (req, res) => {
+  try {
+    const { companyId } = req.params; // Extract companyId from URL parameters
+    const company = await getCompanyById(companyId);
+
+    if (!company) {
+      return res.status(404).json({ message: ERROR_MESSAGES.COMPANY_NOT_FOUND });
+    }
+
+    res.status(200).json(company);
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 

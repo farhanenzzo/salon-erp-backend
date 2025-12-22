@@ -13,7 +13,7 @@ import {
   SUCCESS_MESSAGES,
 } from "../constants.js";
 import { User } from "../models/User.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import { generateNextSTId } from "../utils/idGenerator.js";
 
 /**
@@ -236,7 +236,7 @@ export const createCategory = async (req, res) => {
   if (req.file) {
     try {
       const fileName = `${Date.now()}-${req.file.originalname}`;
-      categoryPhoto = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+      categoryPhoto = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
     } catch (error) {
       console.log(ERROR_MESSAGES.FAILED_IMAGE_UPLOAD, error);
       return res
@@ -463,7 +463,7 @@ export const updateCategoryDetails = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        categoryPhoto = await uploadImageToBlob(req.file.buffer, fileName);
+        categoryPhoto = await uploadImageToFirebase(req.file.buffer, fileName);
 
         if (!categoryPhoto) {
           return res.status(500).json({

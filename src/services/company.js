@@ -78,6 +78,19 @@ export const companyDetails = async (companyId) => {
 };
 
 /**
+ * Retrieves the details of a specific company by its ID.
+ * @async
+ * @param {string} companyId - The ID of the company to retrieve.
+ * @returns {Promise<Object>} The company details as an object.
+ * @throws {Error} Throws an error if the company is not found.
+ */
+export const getCompanyById = async (companyId) => {
+  // Fetch company details from the database
+  const company = await Company.findById(companyId);
+  return company;
+};
+
+/**
  * Updates the details of a company in the database.
  * @async
  * @param {string} companyId - The ID of the company to update.
@@ -110,7 +123,7 @@ export const updateCompanyDetails = async (companyId, updatedData) => {
 export const listCompanies = async () => {
   // Fetch all companies from the database
   const companies = await Company.find().select(
-    `${COMPANY_FIELDS.NAME} ${COMPANY_FIELDS.COUNTRY} ${COMPANY_FIELDS.CITY}`
+    `${COMPANY_FIELDS.NAME} ${COMPANY_FIELDS.COUNTRY} ${COMPANY_FIELDS.CITY} ${COMPANY_FIELDS.ADDRESS}`
   );
   return companies;
 };

@@ -5,7 +5,7 @@ import {
   STOCK_STATUSES,
   SUCCESS_MESSAGES,
 } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import { stockValidationSchema } from "../validators/stock.js";
 import { generateNextStockId } from "../utils/idGenerator.js";
 import Category from "../models/Category.js";
@@ -91,7 +91,7 @@ export const addNewStock = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        productImage = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+        productImage = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
       } catch (error) {
         return res
           .status(500)
@@ -387,7 +387,7 @@ export const updateStock = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        productImage = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+        productImage = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
       } catch (error) {
         return res
           .status(500)
@@ -451,8 +451,8 @@ export const getStockById = async (req, res) => {
     const stock = await Stocks.findOne({
       _id: id,
       isTrashed: false,
-      companyId: req.companyId, 
-    }).populate("stockCategory" , "_id name")
+      companyId: req.companyId,
+    }).populate("stockCategory", "_id name")
 
     if (!stock) {
       // If stock is not found, return a 404 response

@@ -9,7 +9,7 @@ import {
   SUCCESS_MESSAGES,
   APPOINTMENT_STATUS,
 } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import { generateNextSTId } from "../utils/idGenerator.js";
 import { Appointment } from "../models/Appointments.js";
 
@@ -50,7 +50,7 @@ export const addServices = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        photoToUse = await uploadImageToBlob(req.file.buffer, fileName);
+        photoToUse = await uploadImageToFirebase(req.file.buffer, fileName);
       } catch (error) {
         return res
           .status(500)
@@ -433,7 +433,7 @@ export const updateService = async (req, res) => {
     if (req.file) {
       try {
         const fileName = `${Date.now()}-${req.file.originalname}`;
-        photoToUse = await uploadImageToBlob(req.file.buffer, fileName);
+        photoToUse = await uploadImageToFirebase(req.file.buffer, fileName);
       } catch (error) {
         return res
           .status(500)

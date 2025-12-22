@@ -1,14 +1,13 @@
-import { ERROR_MESSAGES } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 
 /**
- * Handles image upload, generates a unique file name, uploads the image to Azure Blob Storage,
+ * Handles image upload, generates a unique file name, uploads the image to Firebase Storage,
  * and responds with the image URL.
  * @async
  * @param {Object} req - The request object containing the image file in the `file` property.
  * @param {Object} res - The response object to send the result.
  * @returns {Promise<void>} Responds with the uploaded image's URL, or an error message if the upload fails.
- * @throws {Error} Throws an error if the image upload to Azure Blob fails or if no file is provided.
+ * @throws {Error} Throws an error if the image upload to Firebase fails or if no file is provided.
  */
 export const uploadImage = async (req, res) => {
   try {
@@ -17,7 +16,7 @@ export const uploadImage = async (req, res) => {
     }
 
     const fileName = `${Date.now()}-${req.file.originalname}`; // Generate a unique file name
-    const imageUrl = await uploadImageToBlob(req.file.buffer, fileName);
+    const imageUrl = await uploadImageToFirebase(req.file.buffer, fileName);
 
     // Optionally, save image metadata in the database
     // await saveImageMetadata(req.companyId, imageUrl);

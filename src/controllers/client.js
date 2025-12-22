@@ -5,7 +5,7 @@ import {
   SUCCESS_MESSAGES,
   USER_ROLES,
 } from "../constants.js";
-import { uploadImageToBlob } from "../utils/azureUpload.js";
+import { uploadImageToFirebase } from "../services/firebaseStorage.js";
 import { generateNextClientId } from "../utils/idGenerator.js";
 import * as clientService from "../services/client.js";
 import { auth } from "../../firebaseAdmin.js";
@@ -47,7 +47,7 @@ export const addClient = async (req, res) => {
   if (req.file) {
     try {
       const fileName = `${Date.now()}-${req.file.originalname}`;
-      photoToUse = await uploadImageToBlob(req.file.buffer, fileName); // Upload and get the URL
+      photoToUse = await uploadImageToFirebase(req.file.buffer, fileName); // Upload and get the URL
     } catch (error) {
       return res
         .status(500)
@@ -262,7 +262,7 @@ export const updateClient = async (req, res) => {
   if (req.file) {
     try {
       const fileName = `${Date.now()}-${req.file.originalname}`;
-      photoToUse = await uploadImageToBlob(req.file.buffer, fileName); // Upload the photo and get the URL
+      photoToUse = await uploadImageToFirebase(req.file.buffer, fileName); // Upload the photo and get the URL
     } catch (error) {
       console.log(ERROR_MESSAGES.FAILED_IMAGE_UPLOAD, error);
       return res

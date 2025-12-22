@@ -19,6 +19,7 @@ import roleRoutes from "./role.js";
 import paymentRoutes from "../routes/payment.js";
 import { BASE_ROUTES } from "../constants.js";
 import revenueRoutes from "../routes/revenue.js";
+import grotechAdminRoutes from "./grotechAdmin.js";
 
 const router = express.Router();
 
@@ -32,6 +33,7 @@ const router = express.Router();
  */
 router.use(BASE_ROUTES.OTP, otpRoutes);
 router.use(BASE_ROUTES.AUTH, authRoutes);
+router.use("/grotech-admin", grotechAdminRoutes);
 
 // Public route to add a company (no authentication required)
 router.use(BASE_ROUTES.COMPANY, companyRoutes);
