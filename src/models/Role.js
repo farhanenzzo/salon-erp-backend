@@ -26,7 +26,6 @@ const roleSchema = new mongoose.Schema({
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: MODELS.COMPANY,
-    required: true,
   },
   createdAt: {
     type: Date,

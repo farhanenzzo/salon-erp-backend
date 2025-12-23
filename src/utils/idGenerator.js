@@ -21,11 +21,11 @@ import { ServicesIdTracker } from "../models/Services.js";
 import { StockIdTracker } from "../models/Stocks.js";
 import { UserIdTracker } from "../models/User.js";
 
-export const generateNextClientId = async (companyId) => {
+export const generateNextClientId = async () => {
   try {
     // Find and update the tracker, incrementing the last client ID
     const tracker = await ClientIdTracker.findOneAndUpdate(
-      { companyId },
+      {},
       { $inc: { lastClientId: GENERAL_CONSTANTS.ONE } },
       { new: true, upsert: true }
     );

@@ -758,7 +758,7 @@ export const updateProfile = async (req, res) => {
 
     if (!user) {
       // If not found in User table, check in the Client table
-      user = await Client.findOne({ firebaseUid: userId, companyId });
+      user = await Client.findOne({ firebaseUid: userId });
       console.log("user in update client", user);
 
       if (!user) {
@@ -804,20 +804,23 @@ export const updateProfile = async (req, res) => {
  */
 
 export const mobileSignupUser = async (req, res) => {
-  const { name, email, firebaseUid, companyId, mobile, gender } = req.body;
+  const { name, email, firebaseUid, mobile, gender } = req.body;
 
   console.log("req body in mobile signup", req.body);
 
   try {
     // Validate required fields
-    if (!name || !email || !companyId) {
+    if (!name || !email) {
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.ALL_FIELDS_REQUIRED });
     }
 
     // Check if the 'USER' role already exists in the database
-    let role = await Role.findOne({ roleName: USER_ROLES.USER, companyId });
+    let role = await Role.findOne({
+      roleName: USER_ROLES.USER,
+      companyId: null,
+    });
 
     console.log("role in roleess", role);
 
@@ -825,7 +828,7 @@ export const mobileSignupUser = async (req, res) => {
       // If the role doesn't exist, create a new one
       const newRole = new Role({
         roleName: USER_ROLES.USER,
-        companyId,
+        companyId: null,
       });
 
       await newRole.save();
@@ -833,7 +836,7 @@ export const mobileSignupUser = async (req, res) => {
     }
 
     // Generate the next user ID
-    const clientId = await generateNextClientId(companyId);
+    const clientId = await generateNextClientId();
 
     // Create a new ObjectId for both User and Client (same ObjectId)
     const sharedObjectId = new mongoose.Types.ObjectId(); // Generate a shared ObjectId
@@ -859,7 +862,6 @@ export const mobileSignupUser = async (req, res) => {
       _id: sharedObjectId, // Use the same ObjectId as the User
       name: clientFullName,
       email,
-      companyId,
       photo: photoToUse || DEFAULT_PROFILE_IMAGE_URL,
       clientId,
       firebaseUid,
@@ -888,9 +890,7 @@ export const mobileSignupUser = async (req, res) => {
 export const loginMobileUser = async (req, res) => {
   const { email } = req.body;
   try {
-    const user = await Client.findOne({ email })
-      .populate("role")
-      .populate(CLIENT_FIELDS.COMPANY);
+    const user = await Client.findOne({ email }).populate("role");
 
     console.log("user in login", user);
 
@@ -898,16 +898,12 @@ export const loginMobileUser = async (req, res) => {
       throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
     }
 
-    if (!user.companyId) {
-      throw new Error(ERROR_MESSAGES.USER_NOT_ASSOCIATED_WITH_A_COMPANY);
-    }
-
-    const companyId = user.companyId._id.toString();
-    const role = user.role.toString();
+    const companyId = null;
+    const roleId = user.role ? user.role.toString() : null;
     const customerId = user._id.toString();
 
     const token = generateToken({ companyId: companyId });
-    const roleToken = generateToken({ roleId: role });
+    const roleToken = generateToken({ roleId: roleId });
     const customerIdToken = generateToken({ customerId: customerId });
 
     const companyToken = token;
@@ -926,7 +922,7 @@ export const loginMobileUser = async (req, res) => {
       companyToken, // Include company token in response
       user: {
         email: user.email,
-        company: user.companyId.name,
+        company: null,
         id: user._id,
         customId: user.clientId,
         mobile: user.phone,

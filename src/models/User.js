@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   userId: {
-      type: String,
-    },
+    type: String,
+  },
   email: {
     type: String,
     required: true,
@@ -40,12 +40,10 @@ const userSchema = new mongoose.Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: MODELS.ROLE, // Reference to the Role model
-    required: true, // Ensures every user has a role assigned
   },
   company: {
     type: mongoose.Schema.Types.ObjectId,
     ref: MODELS.COMPANY, // Reference to the Company model
-    required: true,
   },
   firebaseUid: {
     type: String,

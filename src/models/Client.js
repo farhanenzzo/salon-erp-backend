@@ -12,11 +12,6 @@ import { GENDER, GENERAL_CONSTANTS, MODELS } from "../constants.js";
  * @type {mongoose.Schema<ClientIdTracker>}
  */
 const lastClientIdTrackerSchema = new mongoose.Schema({
-  companyId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: MODELS.COMPANY, // Reference to the Company model
-    required: true, // Ensure this is always set
-  },
   lastClientId: { type: Number, default: GENERAL_CONSTANTS.ZERO },
 });
 
@@ -32,7 +27,6 @@ const ClientIdTracker = mongoose.model(
 /**
  * @typedef {Object} Client
  * @property {string} clientId - Unique identifier for the client.
- * @property {mongoose.Schema.Types.ObjectId} companyId - Reference to the Company model.
  * @property {string} name - Full name of the client.
  * @property {string} [email] - Email address of the client.
  * @property {string} phone - Phone number of the client.
@@ -51,11 +45,6 @@ const ClientIdTracker = mongoose.model(
 const clientSchema = new mongoose.Schema(
   {
     clientId: { type: String, unique: true },
-    companyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: MODELS.COMPANY, // Reference to the Company model
-      required: true, // Ensure this is always set
-    },
     firebaseUid: { type: String },
     name: { type: String, required: true },
     email: { type: String },
