@@ -48,7 +48,7 @@ const clientSchema = new mongoose.Schema(
     firebaseUid: { type: String },
     name: { type: String, required: true },
     email: { type: String },
-    phone: { type: String },
+    phone: { type: String, unique: true, required: true },
     dob: { type: Date },
     photo: { type: String },
     role: {

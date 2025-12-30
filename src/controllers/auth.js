@@ -726,66 +726,71 @@ export const trashUser = async (req, res) => {
  *
  * @throws {Error} - Throws an error if the user is not found, the image upload fails, or there are database issues.
  */
+
 export const updateProfile = async (req, res) => {
-  const { userId } = req.params; // Assuming userId comes from URL params
-  const { username, email, userProfile, mobile, gender } = req.body;
-  const { companyId } = req;
+  const { userId } = req.params; // This is the firebaseUid
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    gender,
+    dob,
+    notes,
+    address
+  } = req.body;
 
-  console.log("user id in update ", userId);
-
-  // Default to null if no photo is uploaded
   let profileIMG = null;
-
-  // Check if a file was uploaded
   if (req.file) {
     try {
-      // Generate a unique file name using the current timestamp
       const fileName = `${Date.now()}-${req.file.originalname}`;
-
-      // Upload the image to Firebase and get the image URL
       profileIMG = await uploadImageToFirebase(req.file.buffer, fileName);
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: ERROR_MESSAGES.FAILED_IMAGE_UPLOAD });
+      return res.status(500).json({ error: ERROR_MESSAGES.FAILED_IMAGE_UPLOAD });
     }
   }
 
   try {
-    // Declare 'user' with let so we can reassign it later
-    let user = await User.findOne({ firebaseUid: userId, company: companyId });
-    console.log("user in update", user);
+    // 1. Check User table first (for Admin/Staff)
+    let user = await User.findOne({ firebaseUid: userId });
 
+    // 2. If not found, check Client table
     if (!user) {
-      // If not found in User table, check in the Client table
       user = await Client.findOne({ firebaseUid: userId });
-      console.log("user in update client", user);
-
-      if (!user) {
-        return res.status(404).json({ error: ERROR_MESSAGES.USER_NOT_FOUND });
-      }
     }
 
-    // Update user details if they are provided
-    user.name = username || user.name;
+    if (!user) {
+      return res.status(404).json({ error: ERROR_MESSAGES.USER_NOT_FOUND });
+    }
+
+    // Update common fields
+    if (firstName || lastName) {
+      const currentName = user.name || "";
+      const [fName, ...lNames] = currentName.split(" ");
+      user.name = `${firstName || fName} ${lastName || lNames.join(" ")}`.trim();
+    }
+
     user.email = email || user.email;
-    user.phone = mobile || user.phone;
+    user.phone = phone || user.phone;
     user.gender = gender || user.gender;
 
-    // If no new image is uploaded, keep the existing userProfile or assign the new one if provided
-    user.userProfile = profileIMG || userProfile || user.userProfile;
+    // Client-specific fields (Will only save if they exist on the model instance)
+    if (dob) user.dob = dob;
+    if (notes) user.notes = notes;
+    if (address) user.address = address;
 
-    // Save the updated user data to the database
+    // Handle photo mapping (Client uses 'photo', User might use 'userProfile')
+    const finalPhoto = profileIMG || req.body.photo || req.body.userProfile;
+    if (finalPhoto) {
+      if ('photo' in user.schema.paths) user.photo = finalPhoto;
+      if ('userProfile' in user.schema.paths) user.userProfile = finalPhoto;
+    }
+
     await user.save();
 
-    // Respond with a success message and the updated user data
     res.status(200).json({
       message: SUCCESS_MESSAGES.PROFILE_UPDATE_SUCCESS,
-      updatedUser: {
-        name: user.name,
-        email: user.email,
-        userProfile: user.userProfile, // Ensure this is included in the response
-      },
+      updatedUser: user,
     });
   } catch (error) {
     res.status(500).json({ error: ERROR_MESSAGES.FAILED_UPDATING_PROFILE });
@@ -804,16 +809,24 @@ export const updateProfile = async (req, res) => {
  */
 
 export const mobileSignupUser = async (req, res) => {
-  const { name, email, firebaseUid, mobile, gender } = req.body;
+  const { firstName, lastName, phone, firebaseUid } = req.body;
 
   console.log("req body in mobile signup", req.body);
 
   try {
     // Validate required fields
-    if (!name || !email) {
+    if (!firstName || !lastName || !phone || !firebaseUid) {
       return res
         .status(400)
         .json({ message: ERROR_MESSAGES.ALL_FIELDS_REQUIRED });
+    }
+
+    // Check if the phone number is already in use
+    const existingClient = await Client.findOne({ phone });
+    if (existingClient) {
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.PHONE_ALREADY_IN_USE });
     }
 
     // Check if the 'USER' role already exists in the database
@@ -842,7 +855,7 @@ export const mobileSignupUser = async (req, res) => {
     const sharedObjectId = new mongoose.Types.ObjectId(); // Generate a shared ObjectId
 
     // Create the client (use the same _id)
-    const clientFullName = `${name} ${""}`;
+    const clientFullName = `${firstName} ${lastName}`;
 
     let photoToUse = "";
 
@@ -861,12 +874,10 @@ export const mobileSignupUser = async (req, res) => {
     const newClient = new Client({
       _id: sharedObjectId, // Use the same ObjectId as the User
       name: clientFullName,
-      email,
       photo: photoToUse || DEFAULT_PROFILE_IMAGE_URL,
       clientId,
       firebaseUid,
-      phone: mobile,
-      gender,
+      phone,
       role: role._id, // Map the role ID here
     });
 
@@ -888,9 +899,9 @@ export const mobileSignupUser = async (req, res) => {
 };
 
 export const loginMobileUser = async (req, res) => {
-  const { email } = req.body;
+  const { phone } = req.body;
   try {
-    const user = await Client.findOne({ email }).populate("role");
+    const user = await Client.findOne({ phone }).populate("role");
 
     console.log("user in login", user);
 
@@ -898,18 +909,13 @@ export const loginMobileUser = async (req, res) => {
       throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
     }
 
-    const companyId = null;
     const roleId = user.role ? user.role.toString() : null;
     const customerId = user._id.toString();
 
-    const token = generateToken({ companyId: companyId });
     const roleToken = generateToken({ roleId: roleId });
     const customerIdToken = generateToken({ customerId: customerId });
 
-    const companyToken = token;
-
     // Set cookies
-    setCookie(res, TOKENS.COMPANY_TOKEN, companyToken);
     setCookie(res, TOKENS.ROLE_TOKEN, roleToken);
     setCookie(res, TOKENS.CUSTOMER_ID, customerIdToken);
 
@@ -917,12 +923,9 @@ export const loginMobileUser = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      token,
       roleToken, // Include role token in response
-      companyToken, // Include company token in response
       user: {
         email: user.email,
-        company: null,
         id: user._id,
         customId: user.clientId,
         mobile: user.phone,
